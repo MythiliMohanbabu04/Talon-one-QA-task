@@ -1,355 +1,314 @@
 {
-	"info": {
-		"_postman_id": "d3f69d4e-9a4d-42e0-a72c-1c5e3472c5f8",
-		"name": "Talon.one",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"item": [
-		{
-			"name": "Create a Comment",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Create a new comment - Successful\", function () {",
-							"    pm.expect(pm.response.code).to.equal(201);",
-							"});",
-							"pm.environment.set('commentId', pm.response.json().id);",
-							"",
-							"pm.test(\"Create a new comment - Response properties\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData).to.have.property(\"id\");",
-							"    pm.expect(jsonData).to.have.property(\"postId\", 1);",
-							"    pm.expect(jsonData).to.have.property(\"body\", \"New comment\");",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"postId\": 1,\n  \"body\": \"New comment\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{baseURL}}/comments",
-					"host": [
-						"{{baseURL}}"
-					],
-					"path": [
-						"comments"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create a Comment - (Invalid Post ID)",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Create a comment with invalid Post ID - Negative\", function () {",
-							"    pm.response.to.have.status(404);",
-							"});",
-							"pm.test(\"Create a comment with invalid Post ID - Error Message\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData).to.have.property(\"error\", \"Post not found\");",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"postId\": 999999,\n  \"body\": \"New comment\"\n}\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{baseURL}}/comments",
-					"host": [
-						"{{baseURL}}"
-					],
-					"path": [
-						"comments"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create a Comment - (Empty Comment Body)",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Create a comment with empty body - Negative\", function () {",
-							"    pm.response.to.have.status(422);",
-							"});",
-							"pm.test(\"Create a comment with empty body - Error Message\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData).to.have.property(\"error\", \"Comment body is required\");",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"postId\": 1,\n  \"body\": \"\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{baseURL}}/comments",
-					"host": [
-						"{{baseURL}}"
-					],
-					"path": [
-						"comments"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update a Comment",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Update a comment - Positive\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"pm.test(\"Update a comment - Response Validation\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData).to.have.property(\"body\", \"Updated comment\");",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"body\": \"Updated comment\"\n}\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{baseURL}}/comments/{{commentId}}",
-					"host": [
-						"{{baseURL}}"
-					],
-					"path": [
-						"comments",
-						"{{commentId}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update a Comment - invalid comment ID",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Update a non-existing comment - Negative\", function () {",
-							"    pm.response.to.have.status(404);",
-							"});",
-							"",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"body\": \"Updated comment\"\n}\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{baseURL}}/comments/{{invalidCommentId}}}",
-					"host": [
-						"{{baseURL}}"
-					],
-					"path": [
-						"comments",
-						"{{invalidCommentId}}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete a Comment",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Update a comment - Positive\", function () {",
-							"    pm.response.to.have.status(200);",
-							"})",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{baseURL}}/comments/{{commentId}}",
-					"host": [
-						"{{baseURL}}"
-					],
-					"path": [
-						"comments",
-						"{{commentId}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "update new comment for already Deleted Comment",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Delete a non-existing comment - Negative\", function () {",
-							"    pm.response.to.have.status(404);",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"url": {
-					"raw": "{{baseURL}}/comments/{{commentId}}",
-					"host": [
-						"{{baseURL}}"
-					],
-					"path": [
-						"comments",
-						"{{commentId}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete a Comment - invalid comment ID Copy",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Delete a non-existing comment - Negative\", function () {",
-							"    pm.response.to.have.status(404);",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{baseURL}}/comments/{{invalidCommentId}}}",
-					"host": [
-						"{{baseURL}}"
-					],
-					"path": [
-						"comments",
-						"{{invalidCommentId}}}"
-					]
-				}
-			},
-			"response": []
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "baseURL",
-			"value": "http://localhost:4000",
-			"type": "default",
-			"disabled": true
-		}
-	]
+  "info": {
+    "_postman_id": "d3f69d4e-9a4d-42e0-a72c-1c5e3472c5f8",
+    "name": "Talon.one",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create a Comment",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Create a new comment - Successful\", function () {",
+              "    pm.expect(pm.response.code).to.equal(201);",
+              "});",
+              "pm.environment.set('commentId', pm.response.json().id);",
+              "",
+              "pm.test(\"Create a new comment - Response properties\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property(\"id\");",
+              "    pm.expect(jsonData).to.have.property(\"postId\", 1);",
+              "    pm.expect(jsonData).to.have.property(\"body\", \"New comment\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"postId\": 1,\n  \"body\": \"New comment\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/comments",
+          "host": ["{{baseURL}}"],
+          "path": ["comments"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create a Comment - (Invalid Post ID)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Create a comment with invalid Post ID - Negative\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "pm.test(\"Create a comment with invalid Post ID - Error Message\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property(\"error\", \"Post not found\");",
+              "});",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"postId\": 999999,\n  \"body\": \"New comment\"\n}\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/comments",
+          "host": ["{{baseURL}}"],
+          "path": ["comments"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create a Comment - (Empty Comment Body)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Create a comment with empty body - Negative\", function () {",
+              "    pm.response.to.have.status(422);",
+              "});",
+              "pm.test(\"Create a comment with empty body - Error Message\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property(\"error\", \"Comment body is required\");",
+              "});",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"postId\": 1,\n  \"body\": \"\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/comments",
+          "host": ["{{baseURL}}"],
+          "path": ["comments"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update a Comment",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Update a comment - Positive\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test(\"Update a comment - Response Validation\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property(\"body\", \"Updated comment\");",
+              "});",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"body\": \"Updated comment\"\n}\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/comments/{{commentId}}",
+          "host": ["{{baseURL}}"],
+          "path": ["comments", "{{commentId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update a Comment - invalid comment ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Update a non-existing comment - Negative\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"body\": \"Updated comment\"\n}\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/comments/{{invalidCommentId}}}",
+          "host": ["{{baseURL}}"],
+          "path": ["comments", "{{invalidCommentId}}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete a Comment",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Update a comment - Positive\", function () {",
+              "    pm.response.to.have.status(200);",
+              "})",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/comments/{{commentId}}",
+          "host": ["{{baseURL}}"],
+          "path": ["comments", "{{commentId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "update new comment for already Deleted Comment",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Delete a non-existing comment - Negative\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/comments/{{commentId}}",
+          "host": ["{{baseURL}}"],
+          "path": ["comments", "{{commentId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete a Comment - invalid comment ID Copy",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Delete a non-existing comment - Negative\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/comments/{{invalidCommentId}}}",
+          "host": ["{{baseURL}}"],
+          "path": ["comments", "{{invalidCommentId}}}"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseURL",
+      "value": "http://localhost:4000",
+      "type": "default",
+      "disabled": true
+    }
+  ]
 }
